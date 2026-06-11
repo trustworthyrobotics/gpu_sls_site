@@ -1,11 +1,498 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My First Website</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="GPU-SLS: safe large-scale robust nonlinear MPC in milliseconds via reachability-constrained system level synthesis on the GPU.">
+  <title>GPU-SLS: Safe Large-Scale Robust Nonlinear MPC in Milliseconds</title>
+  <style>
+    :root {
+      --ink: #10141f;
+      --muted: #5c6678;
+      --line: #d9dee8;
+      --paper: #ffffff;
+      --soft: #f5f7fb;
+      --blue: #003057;
+      --gold: #b3a369;
+      --green: #1f7a5a;
+      --shadow: 0 18px 45px rgba(22, 30, 50, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { display: block; max-width: 100%; }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 54px 0 30px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(0, 48, 87, 0.08), rgba(255, 255, 255, 0) 42%), var(--paper);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+      gap: 34px;
+      align-items: center;
+    }
+
+    .hero-title {
+      grid-column: 1 / -1;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.1rem, 5vw, 4.25rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 20px;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .hero-meta {
+      grid-column: 1 / -1;
+      text-align: center;
+    }
+
+    .hero-meta .links {
+      justify-content: center;
+    }
+
+    .authors {
+      margin-top: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .authors strong { color: var(--ink); }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid rgba(16, 20, 31, 0.14);
+      border-radius: 999px;
+      background: var(--ink);
+      color: white;
+      font-weight: 750;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(16, 20, 31, 0.14);
+    }
+
+    .button.secondary {
+      background: white;
+      color: var(--ink);
+      box-shadow: none;
+    }
+
+    .button:hover {
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .hero-media,
+    .media-card {
+      overflow: hidden;
+      border: 0;
+      border-radius: 0;
+      background: white;
+      box-shadow: none;
+    }
+
+    .hero-media { background: white; box-shadow: none; }
+    .hero-media img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+
+    .caption {
+      margin: 0;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      background: white;
+      border-top: 0;
+    }
+
+    .strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-bottom: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .stat {
+      min-height: 116px;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+    }
+
+    .stat:last-child { border-right: 0; }
+    .stat strong { display: block; color: var(--blue); font-size: clamp(1.7rem, 3vw, 2.55rem); line-height: 1; }
+    .stat span { display: block; margin-top: 8px; color: var(--muted); font-size: 0.94rem; }
+
+    .section { padding: 64px 0; }
+    .section.alt { background: var(--soft); border-block: 1px solid var(--line); }
+
+    .abstract {
+      max-width: 900px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+      text-align: justify;
+    }
+
+    .section-intro {
+      max-width: 780px;
+      margin: -8px 0 24px;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .results-stack {
+      display: grid;
+      gap: 26px;
+    }
+
+    .result-block {
+      display: grid;
+      gap: 16px;
+    }
+
+    .teaser-grid,
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .method-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .media-card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: white; }
+    .media-card.square img { aspect-ratio: 1 / 1; }
+    .media-card.wide img { aspect-ratio: 18 / 7; }
+    .media-card.contain img { object-fit: contain; }
+    .motivation-crop .crop-window,
+    .experiment-crop .crop-window {
+      aspect-ratio: 1 / 0.88;
+      overflow: hidden;
+      background: white;
+    }
+    .motivation-crop .crop-window img,
+    .experiment-crop .crop-window img {
+      width: 100%;
+      max-width: none;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: initial;
+      transform: translate(0, -6%);
+      background: white;
+    }
+    .top-crop-5 .crop-window {
+      aspect-ratio: 20 / 5;
+      overflow: hidden;
+      background: white;
+    }
+    .top-crop-5 .crop-window img {
+      width: 100%;
+      max-width: none;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: initial;
+      transform: translateY(-5%);
+      background: white;
+    }
+
+    .media-body {
+      padding: 14px 16px 16px;
+      border-top: 0;
+    }
+
+    .media-body p,
+    .method-card p,
+    .callout p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .method-card {
+      min-height: 220px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      margin-bottom: 14px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(0, 48, 87, 0.09);
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .method-card:nth-child(2) .tag { background: rgba(31, 122, 90, 0.11); color: var(--green); }
+    .method-card:nth-child(3) .tag { background: rgba(179, 163, 105, 0.18); color: #6b5d25; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .gallery .span-2 { grid-column: span 2; }
+
+    .callout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+      gap: 26px;
+      align-items: center;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .bibtex-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #111827;
+      color: #edf2f7;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    footer {
+      padding: 28px 0 44px;
+      color: var(--muted);
+      text-align: center;
+      border-top: 0;
+      background: var(--soft);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .callout { grid-template-columns: 1fr; }
+      .strip,
+      .method-grid,
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .gallery .span-2 { grid-column: span 1; }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: min(100% - 28px, 1120px); }
+      .hero { padding-top: 34px; }
+      .strip,
+      .teaser-grid,
+      .comparison-grid,
+      .method-grid,
+      .gallery { grid-template-columns: 1fr; }
+      .stat { border-right: 0; border-bottom: 1px solid var(--line); }
+      .stat:last-child { border-bottom: 0; }
+      .bibtex-header { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <p>This is my website on GitHub Pages.</p>
+  <main id="main-content">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-title">
+          <h1>Safe Large-Scale Robust Nonlinear MPC in Milliseconds via Reachability-Constrained System Level Synthesis on the GPU</h1>
+        </div>
+        <div class="hero-meta">
+          <div class="authors">
+            <strong>Jeffrey Fang</strong> and <strong>Glen Chou</strong><br>
+            Georgia Institute of Technology
+          </div>
+          <div class="links" aria-label="Project links">
+            <a class="button" href="https://github.com/trustworthyrobotics/gpu_sls" target="_blank" rel="noopener">Code</a>
+            <a class="button secondary" href="https://arxiv.org/abs/2604.07644" target="_blank" rel="noopener">arXiv</a>
+            <a class="button secondary" href="https://youtu.be/JbViVhenPTw" target="_blank" rel="noopener">Video</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section">
+      <div class="container">
+        <h2>Motivation</h2>
+        <p class="section-intro">Fast nominal MPC can produce impressive trajectories, but disturbances can push the closed-loop system into unsafe states. GPU-SLS plans with robust reachable tubes so the controller has margin against uncertainty.</p>
+        <div class="comparison-grid">
+          <article class="media-card motivation-crop">
+            <div class="crop-window">
+              <img src="media/nonrobust_motivation.gif" alt="Non-robust rollouts colliding with an obstacle">
+            </div>
+            <div class="media-body"><h3>Non-Robust MPC</h3><p>Under disturbances, nominal rollouts can drift into obstacles because the plan does not account for closed-loop uncertainty.</p></div>
+          </article>
+          <article class="media-card motivation-crop">
+            <div class="crop-window">
+              <img src="media/robust_mpc_motivation.gif" alt="Robust MPC rollouts staying inside tubes and avoiding obstacles">
+            </div>
+            <div class="media-body"><h3>Robust MPC with Tubes</h3><p>Reachable tubes tighten the constraints around the nominal plan, keeping all disturbed rollouts collision-free.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <h2>Method</h2>
+        <p class="section-intro">GPU-SLS combines a GPU-parallel constrained SQP/ADMM trajectory optimizer with system level synthesis. The optimizer finds a dynamically feasible nominal trajectory, while SLS computes a disturbance-feedback controller and reachable tubes that certify robust constraint satisfaction.</p>
+        <article class="media-card wide contain">
+          <img src="media/method_overview.jpeg" alt="Overview of the GPU-SLS method">
+          <div class="media-body"><h3>GPU-SLS Overview</h3><p>Parallel associative scans and cached factorizations make the trajectory, feedback, and reachability computations practical in a receding-horizon loop.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>Results</h2>
+        <div class="results-stack">
+          <div class="result-block">
+            <p class="section-intro">Against DeepReach, GPU-SLS explicitly synthesizes a robust feedback policy and reachable tube online, avoiding the unsafe rollouts produced by the learned safety certificate.</p>
+            <div class="comparison-grid">
+              <article class="media-card experiment-crop">
+                <div class="crop-window">
+                  <img src="media/deepreach_fail.gif" alt="DeepReach rollouts colliding with an obstacle">
+                </div>
+                <div class="media-body"><h3>DeepReach</h3><p>DeepReach fails to consistently certify safety under adversarial and random disturbance.</p></div>
+              </article>
+              <article class="media-card experiment-crop">
+                <div class="crop-window">
+                  <img src="media/robust_mpc_sls_deepreach.gif" alt="GPU-SLS rollouts safely avoiding an obstacle">
+                </div>
+                <div class="media-body"><h3>GPU-SLS</h3><p>Our reachable-tube controller keeps the rollouts safe across the same obstacle-avoidance setting.</p></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="result-block">
+            <article class="media-card top-crop-5">
+              <div class="crop-window">
+                <img src="media/long_range_dubins.gif" alt="Long-range Dubins car navigation through many obstacles">
+              </div>
+              <div class="media-body"><h3>Long-Range Dubins Navigation</h3><p>GPU-SLS synthesizes robust policies for long-range fields with many obstacle constraints, maintaining safety over extended horizons.</p></div>
+            </article>
+          </div>
+
+          <div class="result-block">
+            <p class="section-intro">The same formulation scales from low-dimensional planning benchmarks to whole-body humanoid systems, where the policy must account for high-dimensional dynamics and uncertainty.</p>
+            <div class="comparison-grid">
+              <article class="media-card contain">
+                <img src="media/robust_sls_rollouts_humanoid.gif" alt="Humanoid disturbed rollouts within robust SLS tubes">
+                <div class="media-body"><h3>Robust SLS Humanoid Rollouts</h3><p>Disturbed humanoid rollouts remain inside the synthesized robust tubes.</p></div>
+              </article>
+              <article class="media-card contain">
+                <img src="media/robust_mpc_humanoid_tubes.gif" alt="Robust MPC humanoid navigation with tubes">
+                <div class="media-body"><h3>Robust MPC Humanoid</h3><p>Reachability-constrained MPC enables high-dimensional humanoid navigation around obstacles.</p></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="result-block">
+            <p class="section-intro">Finally, GPU-SLS runs on real quadruped hardware, producing robust whole-body control policies that navigate around obstacles in real time.</p>
+            <div class="gallery">
+              <article class="media-card">
+                <img src="media/hardware_robust_quad.gif" alt="Robust quadruped hardware navigation with GPU-SLS">
+                <div class="media-body"><h3>Real-Time Robust MPC and SLS</h3><p>Robust whole-body control on quadruped hardware with online tube-aware policy synthesis.</p></div>
+              </article>
+              <article class="media-card">
+                <img src="media/hardware_quad.gif" alt="Quadruped hardware obstacle navigation">
+                <div class="media-body"><h3>Hardware Quadruped</h3><p>Whole-body constrained MPC on a Unitree Go2 hardware platform.</p></div>
+              </article>
+              <article class="media-card">
+                <img src="media/hardware_quad_collision_distance.gif" alt="Quadruped collision distance plot">
+                <div class="media-body"><h3>Collision Margin</h3><p>The hardware rollout maintains positive distance to obstacles while tracking the robust plan.</p></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="bibtex">
+      <div class="container">
+        <div class="bibtex-header"><h2>BibTeX</h2><a class="button secondary" href="paper.tex">View TeX</a></div>
+        <pre><code>@article{fang2026gpu_sls,
+  title={Safe Large-Scale Robust Nonlinear MPC in Milliseconds via Reachability-Constrained System Level Synthesis on the GPU},
+  author={Fang, Jeffrey and Chou, Glen},
+  institution={Georgia Institute of Technology},
+  year={2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
 </body>
-</html><!DOCTYPE html>
-<html>
+</html>
