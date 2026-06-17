@@ -254,6 +254,23 @@
       transform: translateY(-5%);
       background: white;
     }
+    .left-top-crop-10 .crop-window {
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: white;
+    }
+    .left-top-crop-10 .crop-window img {
+      display: block;
+      width: auto;
+      max-width: none;
+      height: 120%;
+      aspect-ratio: auto;
+      object-fit: initial;
+      margin: 0 auto;
+      clip-path: inset(0 0 0 5%);
+      transform: translate(-2.5%, -8.333%);
+      background: white;
+    }
 
     .media-body {
       padding: 14px 16px 16px;
@@ -449,8 +466,10 @@
           <div class="result-block">
             <p class="section-intro">The same formulation scales from low-dimensional planning benchmarks to whole-body humanoid systems, where the policy must account for high-dimensional dynamics and uncertainty.</p>
             <div class="comparison-grid">
-              <article class="media-card contain">
-                <img src="media/robust_sls_rollouts_humanoid.gif" alt="Humanoid disturbed rollouts within robust SLS tubes">
+              <article class="media-card contain left-top-crop-10">
+                <div class="crop-window">
+                  <img src="media/robust_sls_rollouts_humanoid.gif" alt="Humanoid disturbed rollouts within robust SLS tubes">
+                </div>
                 <div class="media-body"><h3>Robust SLS Humanoid Rollouts</h3><p>Disturbed humanoid rollouts remain inside the synthesized robust tubes.</p></div>
               </article>
               <article class="media-card contain">
